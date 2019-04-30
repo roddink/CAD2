@@ -74,7 +74,7 @@ def page_decision_tree(x, y, data_frame_cleaned):
     d_tree.fit(x, y)
     features_names = list(np.unique(data_frame_cleaned["pagelocationdomain"]))
     # we export the tree as a graphviz format
-    dot_data = export_graphviz(dtree, out_file=None,
+    dot_data = export_graphviz(d_tree, out_file=None,
                                feature_names=features_names,
                                class_names='iscustomer',
                                filled=True, rounded=True,
