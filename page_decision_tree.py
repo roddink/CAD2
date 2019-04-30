@@ -54,9 +54,8 @@ def generate_train_data(data_frame_cleaned):
     """
     y = data_frame_cleaned["iscustomer"]
     cont_names = list(["sessionnumber", "pageinstanceid", "eventtimestamp", "pagesequenceinsession"])
-    for col in cont_names:
-        data_frame_cleaned = data_frame_cleaned.drop(data_frame_cleaned.loc[:, [isinstance(data_frame_cleaned[col]
-                                                                                           , str)]])
+    drop_dic = lines_to_delete(data_frame_cleaned, cont_names)
+    data_frame_cleaned = delete_noise(data_frame_cleaned, drop_dic)
     x_page_location_domain_dummies = pd.get_dummies(page_df_cleaned["pagelocationdomain"])
     x = pd.concat([data_frame_cleaned[cont_names], x_page_location_domain_dummies], axis=1)
     return x, y
