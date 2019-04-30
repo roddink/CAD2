@@ -25,11 +25,12 @@ def lines_to_delete(data_frame, cont_names):
     """
 
     df_size = data_frame.shape[0]
-    to_drop_dic = dict.fromkeys(cont_names, None)
+    to_drop_dic = dict.fromkeys(cont_names, [])
     for col in cont_names:
         for i in range(df_size):
-            if not isinstance(data_frame[col].iloc[i], np.int64):
-                to_drop_dic[col] = i
+            if isinstance(data_frame[col].iloc[i], str):
+                to_drop_dic[col].append(i)
+        to_drop_dic[col] = np.unique(to_drop_dic[col])
     return to_drop_dic
 
 
@@ -40,9 +41,12 @@ def delete_noise(data_frame, to_drop_dic):
     :param to_drop_dic: dictionary which contains the index of the rows to delete
     :return: data frame cleaned
     """
+    print(to_drop_dic)
     col_names = list(to_drop_dic.keys())
     for col in col_names:
-        data_frame = data_frame.drop(data_frame.index[np.asarray(to_drop_dic[col])])
+        for val in to_drop_dic[col]:
+            if val in data_frame.index:
+                data_frame = data_frame.drop(val)
     return data_frame
 
 
@@ -56,7 +60,7 @@ def generate_train_data(data_frame_cleaned):
     cont_names = list(["sessionnumber", "pageinstanceid", "eventtimestamp", "pagesequenceinsession"])
     drop_dic = lines_to_delete(data_frame_cleaned, cont_names)
     data_frame_cleaned = delete_noise(data_frame_cleaned, drop_dic)
-    x_page_location_domain_dummies = pd.get_dummies(page_df_cleaned["pagelocationdomain"])
+    x_page_location_domain_dummies = pd.get_dummies(data_frame_cleaned["pagelocationdomain"])
     x = pd.concat([data_frame_cleaned[cont_names], x_page_location_domain_dummies], axis=1)
     return x, y
 
