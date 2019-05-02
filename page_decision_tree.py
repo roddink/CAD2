@@ -1,6 +1,6 @@
 import pandas as pd
-import sys
-import clean_page_files as cpf
+# import sys
+# import clean_page_files as cpf
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier, export_graphviz
 import pydotplus
@@ -10,10 +10,6 @@ warnings.filterwarnings('ignore')
 """
     Usage : py_file_name    cleaned_page_file
 """
-
-# file path is the path od the clean page file
-file_path = sys.argv[1]
-page_df_cleaned = cpf.read_data(file_path)
 
 
 def lines_to_delete(data_frame, cont_names):
@@ -57,7 +53,7 @@ def generate_train_data(data_frame_cleaned):
     :return: features x and the response variable iscustomer
     """
     y = data_frame_cleaned["iscustomer"]
-    cont_names = list(["sessionnumber", "pageinstanceid", "eventtimestamp", "pagesequenceinsession"])
+    cont_names = list(["sessionnumber", "eventtimestamp", "pagesequenceinsession"])
     drop_dic = lines_to_delete(data_frame_cleaned, cont_names)
     data_frame_cleaned = delete_noise(data_frame_cleaned, drop_dic)
     x_page_location_domain_dummies = pd.get_dummies(data_frame_cleaned["pagelocationdomain"])
@@ -87,6 +83,14 @@ def page_decision_tree(x, y, data_frame_cleaned):
     graph_png.write_pdf('page_tree.pdf')
 
 
+
+"""
+# file path is the path od the clean page file
+file_path = sys.argv[1]
+page_df_cleaned = cpf.read_data(file_path)
+
 # read the data for the tree
 [x, y] = generate_train_data(page_df_cleaned)
 page_decision_tree(x, y, page_df_cleaned)
+
+"""
