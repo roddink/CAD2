@@ -1,6 +1,8 @@
 import pandas as pd
 import sys
 import page_decision_tree as pdt
+import matplotlib as mpl
+mpl.use('Agg')
 from sklearn.tree import export_graphviz
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, BaggingClassifier, AdaBoostClassifier
