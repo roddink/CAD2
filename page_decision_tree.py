@@ -53,11 +53,12 @@ def generate_train_data(data_frame_cleaned):
     :return: features x and the response variable iscustomer
     """
     y = data_frame_cleaned["iscustomer"]
-    cont_names = list(["sessionnumber", "eventtimestamp", "pagesequenceinsession"])
+    cont_names = list(["attributionsequenceinsession","pagesequenceinsession", "eventtimestamp","pagesequenceinattribution"])
     drop_dic = lines_to_delete(data_frame_cleaned, cont_names)
     data_frame_cleaned = delete_noise(data_frame_cleaned, drop_dic)
     x_page_location_domain_dummies = pd.get_dummies(data_frame_cleaned["pagelocationdomain"])
     x = pd.concat([data_frame_cleaned[cont_names], x_page_location_domain_dummies], axis=1)
+    # x = data_frame_cleaned[cont_names]
     return x, y
 
 

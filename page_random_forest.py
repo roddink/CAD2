@@ -9,7 +9,8 @@ from sklearn.ensemble import RandomForestClassifier, BaggingClassifier, AdaBoost
 from sklearn.model_selection import GridSearchCV
 import pydotplus
 import matplotlib.pyplot as plt
-
+import numpy as np
+from tabulate import *	
 """
     Usage : py_file_name    cleaned_page_file
 """
@@ -25,7 +26,7 @@ def page_random_forest(x, y):
     clf = RandomForestClassifier(bootstrap=True, oob_score=True, criterion='gini', random_state=0, max_depth=10)
     clf.fit(x, y)
     # number of trees
-    n_estimators = [int(x) for x in np.linspace(100, 500, 2)]
+    n_estimators = [100, 200]
     # Try to add more of the parameters from the model and then add them to this dict to see how it affects the model.
     param_grid = {
         'n_estimators': n_estimators,
@@ -38,13 +39,14 @@ def page_random_forest(x, y):
     # # Look at one random forrest and the importance of the features
     one_rf = RandomForestClassifier(bootstrap=True, oob_score=True, max_depth=10, n_estimators=5,
                                     criterion='gini', random_state=0)
-    # score = one_rf.fit(x, y)
-    # headers = ["name", "score"]
-    # values = sorted(zip(range(0, P), one_rf.feature_importances_), key=lambda x: x[1] * -1)
+    score = one_rf.fit(x, y)
+    headers = ["name", "score"]
+    values = sorted(zip(range(0, P), one_rf.feature_importances_), key=lambda x: x[1] * -1)
     # See which features are deemed most important by the classifier
-    # print(tabulate(values, headers, tablefmt="plain"))
-    # print('Random Forest OOB error rate: {}'.format(1 - one_rf.oob_score_))
+    print(tabulate(values, headers, tablefmt="plain"))
+    print('Random Forest OOB error rate: {}'.format(1 - one_rf.oob_score_))
     i = 1
+    """
     for tree_in_forest in one_rf.estimators_:
         dot_data = export_graphviz(tree_in_forest,
                                    out_file=None,
@@ -55,7 +57,7 @@ def page_random_forest(x, y):
         graph_name = 'forest_tree_' + str(i) + '.pdf'
         i += 1
         graph_png.write_pdf(graph_name)
-
+    """
     # bagging = BaggingClassifier(DecisionTreeClassifier(),n_estimators=100, bootstrap=True, oob_score = True,
     #  max_samples=0.5, max_features=0.5)
     bagging = BaggingClassifier(DecisionTreeClassifier(), bootstrap=True, oob_score=True, max_samples=0.5,
